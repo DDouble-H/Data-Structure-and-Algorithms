@@ -13,7 +13,7 @@ def selection(x, ascending=True):
         for i in range(len(x)-1):
             min_index = i
             min_val = x[i]
-            for j in range(i+1, len(x)):
+            for j in range(min_index+1, len(x)):
                 if min_val > x[j]:
                     min_val = x[i]
                     min_index = j
