@@ -10,23 +10,16 @@ def selection(x, ascending=True):
         return False
 
     if ascending: # ascending 인자의 값이 True인 경우 오름차순 정렬
-        for i in range(0, len(x)-1):
-          for j in range(i+1, len(x)):
-            if x[i] > x[j]:
-              temp = x[i]
-              x[i] = x[j]
-              x[j] = temp
+        for i in range(len(x)-1):
+            min_index = i
+            min_val = x[i]
+            for j in range(i+1, len(x)):
+                if min_val > x[j]:
+                    min_val = x[i]
+                    min_index = j
+            x[min_index] = x[i]
+            x[i] = min_val
 
-        return x
-
-    else: # ascending 인자의 값이 True인 경우 내림차순 정렬
-        for i in range(0, len(x)-1):
-          for j in range(i+1, len(x)):
-            if x[i] < x[j]:
-              temp = x[i]
-              x[i] = x[j]
-              x[j] = temp
-        
         return x
 
 if __name__ == '__main__':
