@@ -8,7 +8,7 @@ def selection(x, ascending=True):
     except:
         return False
     
-    if ascending: 
+    if ascending: # ascending 인자의 값이 True인 경우 오름차순 정렬
         for i in range(len(x)-1):
             min_val = x[i] # value
             min_idx = i # index
@@ -21,16 +21,16 @@ def selection(x, ascending=True):
 
         return x
     
-    else: # ascending 인자의 값이 True인 경우 내림차순 정렬
+    else:
         for i in range(len(x)-1):
-            min_val = x[i] # value
-            min_idx = i # index
+            max_val = x[i] # value
+            max_idx = i # index
             for j in range(i+1, len(x)):
-                if min_val < x[j]:
-                    min_val = x[j]
-                    min_idx = j
-            x[min_idx] = x[i]
-            x[i] = min_val
+                if max_val < x[j]:
+                    max_val = x[j]
+                    max_idx = j
+            x[max_idx] = x[i]
+            x[i] = max_val
 
         return x
     
