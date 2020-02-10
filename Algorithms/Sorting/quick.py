@@ -18,10 +18,12 @@ def quick(x):
     
     return x
 
-import random
 
-before = random.sample(range(1, 100), 10)
-print('list', before)
+if __name__ == '__main__':
+    import random
 
-after = quick(before)
-print('sorted', after)
+    before = random.sample(range(1, 100), 10)
+    print('list', before)
+
+    after = quick(before)
+    print('sorted', after)
