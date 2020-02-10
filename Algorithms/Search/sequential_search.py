@@ -1,16 +1,18 @@
-def sequential_search(x, val):
-    for i in range(len(x)):
-        if x[i] == val:
-            return i
-        else: # 리스트에 값이 없을 때 (수정필요)
-            print('값이 없습니다')
+def sequential_search(data, target):
+    for idx in range(len(data)):
+        if data[idx] == target:
+            return idx
+    print('값이 없습니다') # 수정필요
+
 
 if __name__ == '__main__':
+    
     import random
     
-    before = random.sample(range(1, 100), 10)
+    data = random.sample(range(1, 100), 10)
+    print(data)
     
-    val = before[8]
+    target = int(input("data 입력 :"))
     
-    after = sequential_search(before, val)
-    print('idx', after)   
+    result = sequential_search(data, target)
+    print('idx', result)
