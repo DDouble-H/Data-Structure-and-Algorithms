@@ -28,23 +28,23 @@ class BinaryTree:
             else:
                 self._insert(current_node.left, new_node)
 
-    def search(self, data):
-        if self.root.data == data:
-            return data
+    def search(self, target):
+        if self.root.data == target:
+            return self.root.data
         else:
-            self._search(self.root, data)
+            return self._search(self.root, target)
 
-    def _search(self, current_node, data):
-        if current_node.data < data:
-            if current_node.right.data == data:
+    def _search(self, current_node, target):
+        if current_node.data < target:
+            if current_node.right.data == target:
                 return current_node.right.data
             else:
-                self._search(current_node.right, data)
+                self._search(current_node.right, target)
         else:
-            if current_node.left.data == data:
-                return current_node.left
+            if current_node.left.data == target:
+                return current_node.left.data
             else:
-                self._search(current_node.left, data)
+                self._search(current_node.left, target)
 
 
 if __name__ == '__main__':
@@ -63,6 +63,6 @@ if __name__ == '__main__':
     BT.search(2)
     BT.search(3)
 
-    print(BT.root.data)
-    print(BT.root.left.data)
-    print(BT.root.right.data)
+    print(BT.search(3))
+    print(BT.search(1))
+    print(BT.search(2))
