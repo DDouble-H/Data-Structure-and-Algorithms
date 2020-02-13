@@ -46,6 +46,27 @@ class BinaryTree:
             else:
                 self._search(current_node.left, target)
 
+    def delete(self, remove_target):
+        if self.root == remove_target:
+            del self.root
+            # 루트 노드가 지워지면 왼, 오 자식노드에서 루트로 올라와야함
+            # if current_node.left.data < current_node.right.data:
+            #     self.root = current_node.left
+            # else:
+            #     self.root = current_node.right
+            return 'remove the node'
+        else:
+            return self._delete(self.root, remove_target)
+
+    def _delete(self, current_node, remove_target):
+        if current_node.data < remove_target:  # 자식노드가 없을 때
+            if current_node.right.data == remove_target:
+                self.root.right = None
+        else:
+            if current_node.left.data == remove_target:
+                self.root.left = None
+        # 자식노드가 있을 때
+
 
 if __name__ == '__main__':
 
@@ -66,3 +87,6 @@ if __name__ == '__main__':
     print(BT.search(3))
     print(BT.search(1))
     print(BT.search(2))
+
+    BT.delete(2)
+    print(BT.delete(2))
