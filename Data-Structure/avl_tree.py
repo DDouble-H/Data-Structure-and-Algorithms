@@ -30,3 +30,28 @@ class AVL:
             self.node.left.insert(data)
         else:
             self.node.right.insert(data)
+
+    def delete(self, remove_target):
+        self.root, deleted = self._delete(self.root, remove_target)  # 삭제여부 확인(True : 삭제, False)
+        return deleted
+
+    def _delete(self, node, remove_target):
+        deleted = False
+
+        if node is None:
+            return node, deleted
+
+        if node.data == remove_target:
+            pass
+
+        elif node.data > remove_target:
+            node.left, deleted = self._delete(node.left, remove_target)
+
+        else:
+            node.right, deleted = self._delete(node.right, remove_target)
+
+        return node, deleted
+
+
+if __name__ == '__main__':
+    node = [12, 8, 18, 17, 11, 5, 4]
