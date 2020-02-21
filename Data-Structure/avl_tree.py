@@ -9,7 +9,7 @@ class AVL:
     def __init__(self):
         self.root = None
         self.height = -1
-        self.balance = 0
+        self.balance = 0  # -1,0,1
 
     def height(self):
         if self.root:
@@ -21,14 +21,12 @@ class AVL:
         if self.root is not None:
             if recursive:
                 if self.root.left is not None:
-                    #self.root.left > # 이게 새로운 루트가 됨
                     self.root.left.update_balances()
                 if self.root.right is not None:
                     self.root.right.update_balances()
             self.balance = self.root.left.height - self.root.right.height
 
-    def update_heights(self, recursive=True):  # height
-        # left , right max value 만 확인하고 +1해서 update ######################
+    def update_heights(self, recursive=True):
         if self.root is not None:
             if recursive:
                 if self.root.left is not None:
@@ -67,40 +65,32 @@ class AVL:
             self.root = new_node
             self.root.left = AVL()  # 서브트리 생성
             self.root.right = AVL()
-
         elif tree.data > data:
             self.root.left.insert(data)
-
         elif tree.data < data:
             self.root.right.insert(data)
 
         self.rebalance()
 
+    # 노드 입력 > 값 입력, height 계산, bf 체크, >> 깨졌을 때 rr, ll, rl, lr  height가 -로 가는 경우?
     def delete(self, remove_target):
         if self.root is None:
             return self.root
-
         if self.root is not None:
-
             if self.root.data == remove_target:
-
-                if self.root.left.root is None and self.root.right is None:  # left, right 둘 다 없을 때
+                if self.root.left.root is None and self.root.right.root is None:  # left, right 둘 다 없을 때
                     self.root = None
-
                 elif self.root.left.root is None and self.root.right.root is not None:  # L, R 둘 중에 하나만 있을 때
                     # 삭제할 노드의 오른쪽의 제일 작은 값이 위치, 노드끼리 연결
                     self.root = self.root.right.root
-
-                elif self.root.left is not None and self.root.right is None:
+                elif self.root.left.root is not None and self.root.right.root is None:
                     self.root = self.root.left.root
-
             elif self.root.data > remove_target:
                 self.root.left.delete(remove_target)
-
-            elif self.root.data < remove_target:
+            else:
                 self.root.right.delete(remove_target)
 
-        self.rebalance()
+            self.rebalance()
 
     def LL(self):
         a = self.root
@@ -140,4 +130,5 @@ if __name__ == '__main__':
     avl.inorder()
     print()
     avl.delete(17)
+    print()
     avl.inorder()
