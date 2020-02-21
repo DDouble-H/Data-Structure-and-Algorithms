@@ -9,7 +9,7 @@ class AVL:
     def __init__(self):
         self.root = None
         self.height = -1
-        self.balance = 0  # -1,0,1
+        self.balance = 0
 
     def height(self):
         if self.root:
@@ -21,13 +21,14 @@ class AVL:
         if self.root is not None:
             if recursive:
                 if self.root.left is not None:
+                    #self.root.left > # 이게 새로운 루트가 됨
                     self.root.left.update_balances()
                 if self.root.right is not None:
                     self.root.right.update_balances()
             self.balance = self.root.left.height - self.root.right.height
 
     def update_heights(self, recursive=True):  # height
-
+        # left , right max value 만 확인하고 +1해서 update ######################
         if self.root is not None:
             if recursive:
                 if self.root.left is not None:
@@ -59,7 +60,6 @@ class AVL:
                 self.update_heights()
                 self.update_balances()
 
-
     def insert(self, data):
         tree = self.root
         new_node = Node(data)
@@ -68,62 +68,39 @@ class AVL:
             self.root.left = AVL()  # 서브트리 생성
             self.root.right = AVL()
 
-        elif tree.data < data:
+        elif tree.data > data:
             self.root.left.insert(data)
 
-        elif tree.data > data:
+        elif tree.data < data:
             self.root.right.insert(data)
 
         self.rebalance()
 
     def delete(self, remove_target):
-        self.root, deleted = self._delete(self.root, remove_target)  # 삭제여부 확인(True : 삭제, False)
-        return deleted
+        if self.root is None:
+            return self.root
 
-    def _delete(self, current_node, remove_target):
-        deleted = False
+        if self.root is not None:
 
-        # i) 데이터가 없을 때
-        if current_node is None:
-            return current_node, deleted
+            if self.root.data == remove_target:
 
-        # ii) 데이터와 타겟이 동일할 때 (삭제부분)
-        # data 가 둘 다 없을 때, 둘 중에 하나만 있을 때, 둘 다 있을 때
-        if current_node.data == remove_target:
+                if self.root.left.root is None and self.root.right is None:  # left, right 둘 다 없을 때
+                    self.root = None
 
-            if current_node.left is None and current_node.right is None:  # left, right 둘 다 없을 때
-                current_node = None
+                elif self.root.left.root is None and self.root.right.root is not None:  # L, R 둘 중에 하나만 있을 때
+                    # 삭제할 노드의 오른쪽의 제일 작은 값이 위치, 노드끼리 연결
+                    self.root = self.root.right.root
 
-            elif current_node.left is None and current_node.right is not None:  # L, R 둘 중에 하나만 있을 때
-                # 삭제할 노드의 오른쪽의 제일 작은 값이 위치, 노드끼리 연결
-                current_node = current_node.right
+                elif self.root.left is not None and self.root.right is None:
+                    self.root = self.root.left.root
 
-            elif current_node.left is not None and current_node.right is None:
-                current_node = current_node.left
+            elif self.root.data > remove_target:
+                self.root.left.delete(remove_target)
 
-            else:  # L, R 둘 다 있을 때 ## 트리 오른쪽위치에서 최솟값을 가지고 오고, 부모와 자식을 연결해줌
+            elif self.root.data < remove_target:
+                self.root.right.delete(remove_target)
 
-                parent, child = current_node, current_node.right  # 오른쪽이라고 방향만 지정
-
-                while child.left is not None:
-                    parent, child = child, child.left  # 최솟값을 찾는 과정
-
-                child.left = current_node.left  # 이전 노드의 자식과 현재 노드를 연결
-
-                if parent != current_node:
-                    parent.left = child.right
-                    child.right = current_node.right
-
-                current_node = child
-
-        # iii) 데이터가 타켓과 다를 때
-        elif current_node.data > remove_target:
-            current_node.left, deleted = self._delete(current_node.left, remove_target)
-
-        else:
-            current_node.right, deleted = self._delete(current_node.right, remove_target)
-
-        return current_node, deleted
+        self.rebalance()
 
     def LL(self):
         a = self.root
@@ -160,4 +137,7 @@ if __name__ == '__main__':
         avl.insert(num)
     print(node)
 
+    avl.inorder()
+    print()
+    avl.delete(17)
     avl.inorder()
