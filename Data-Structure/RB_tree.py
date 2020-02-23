@@ -10,26 +10,61 @@ class Node:
 class RB:
     def __init__(self):
         self.root = None
+        self.nil = None
 
-    def left_rotate(self, current_node):
-        y = current_node.right
-        current_node.right = y.left
-        y.left.p = current_node
-        y.p = current_node.p
-
-        if current_node.p == None:
-            self.root = y
-        elif current_node == current_node.p.left:
-            current_node.p.left = y
+    def right_rotate(self, x):
+        y = x.left
+        x.left = y.right
+        y.right.p = x
+        x.p = y.p
+        if x.p is self.nil:
+            y = self.root
+        elif x == x.p.right:
+            y = x.p.left
         else:
-            current_node.p.right = y
-        y.left = current_node
-        current_node.p = y
+            y = x.p.right
+
+    def left_rotate(self, x):
+        y = x.right
+        x.right = y.left
+        y.left.p = x
+        x.p = y.p
+        if x.p is self.nil:
+            y = self.root
+        elif x == x.p.left:
+            y = x.p.right
+        else:
+            y = x.p.left
 
     def insert(self, data):
         new_node = Node(data)
         if self.root is None:
             self.root = new_node
+        else:
+            self._insert(self.root, new_node)
+
+    def _insert(self, new_node):
+        y = self.nil
+        x = self.root
+        while x is not self.nil:
+            y = x
+            if new_node.data < x.data:
+                x = x.left
+            else:
+                y = y.right
+            new_node.p = y
+        if y is None: #mean is empty tree
+            self.root = new_node
+        elif new_node.data < y.data:
+            y.left = new_node
+        else:
+            y.right = new_node
+        new_node.left and new_node.right is None
+        new_node.color = True
+        self._insert_fix(self, new_node)
+
+    def _insert_fix(self, new_node):
+        pass
 
 
 if __name__ == '__main__':
