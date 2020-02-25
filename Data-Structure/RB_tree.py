@@ -5,111 +5,137 @@ class Node:
         self.right = None
         self.p = None
         self.color = True  # True : Red, False: Black
-        self.nil = None
 
 
 class RB:
     def __init__(self):
-        self.root = None
-        self.nil = None
+        self.nil = Node(0)
+        self.nil.color = False
+        self.nil.left = None
+        self.nil.right = None
+
+        self.root = self.nil
+
+    def insert(self, data):
+        new_node = Node(data)
+        new_node.p = None
+        new_node.left = self.nil
+        new_node.right = self.nil
+        new_node.color = True
+
+        y = None
+        x = self.root
+
+        while x != self.nil:
+            y = x
+            if new_node.data < x.data:
+                x = x.left
+            else:
+                x = x.right
+        new_node.p = y
+
+        if y is None:
+            self.root = new_node
+        elif new_node.data < y.data:
+            y.left = new_node
+        else:
+            y.right = new_node
+
+        if new_node.p is None:
+            new_node.color = False
+            return
+
+        if new_node.p.p is None:
+            return
+
+        self.insert_fixup(new_node)
+
+    def insert_fixup(self, new_node):
+        while new_node.p.color:
+            if new_node.p == new_node.p.p.right:
+                y = new_node.p.p.left
+
+                if y.color:
+                    y.color = False
+                    new_node.p.color = False
+                    new_node.p.p.color = True
+                    new_node = new_node.p.p
+                else:
+                    if new_node == new_node.p.left:
+                        new_node = new_node.p
+                        self.right_rotate(new_node)
+                    new_node.p.color = False
+                    new_node.p.p.color = True
+                    self.left_rotate(new_node.p.p)
+
+            else:
+                y = new_node.p.p.right
+
+                if y.color:
+                    y.color = False
+                    new_node.p.color = False
+                    new_node.p.p.color = True
+                    new_node = new_node.p.p
+
+                else:
+                    if new_node == new_node.p.right:
+                        new_node = new_node.p
+                        self.left_rotate(new_node)
+                    new_node.p.color = False
+                    new_node.p.p.color = True
+                    self.right_rotate(new_node.p.p)
+
+            if new_node == self.root:
+                break
+        self.root.color = False
 
     def right_rotate(self, x):
         y = x.left
         x.left = y.right
-        y.right.p = x
+        if y.right != self.nil:
+            y.right.p = x
         y.p = x.p
-        if x.p is self.nil:
-            y = self.root
+        if x.p is None:
+            self.root = y
         elif x == x.p.right:
-            y = x.p.left
+            x.p.right = y
         else:
-            y = x.p.right
+            y = x.p.left
         y.right = x
         x.p = y
 
     def left_rotate(self, x):
         y = x.right
         x.right = y.left
-        y.left.p = x
+        if y.left != self.nil:
+            y.left.p = x
         y.p = x.p
-        if x.p is self.nil:
-            y = self.root
+        if x.p is None:
+            self.root = y
         elif x == x.p.left:
-            y = x.p.right
+            x.p.left = y
         else:
-            y = x.p.left
+            y = x.p.right
         y.left = x
         x.p = y
 
-    def insert(self, data):
-        new_node = Node(data)
-        y = self.nil
-        x = self.root
-
-        while x is not None:
-                y = x
-                if new_node.data < x.data:
-                    x = x.left
-                else:
-                    x = x.right
-        new_node.p = y
-
-        if y is self.nil:
-            self.root = new_node
-            self.root.color = False
-        elif new_node.data < y.data:
-            y.left = new_node
+    def inorder(self, x):
+        if x == self.nil:
+            return None
         else:
-            y.right = new_node
-
-        self.insert_fix(new_node)
-
-    def insert_fix(self, new_node):
-        while new_node.p.color is True:  # and new_node.p.nil is not None:  # (case 1,2,3)
-            if new_node.p == new_node.p.p.left:
-                y = new_node.p.p.right  # y는 new_node의 삼촌
-                # case 1:
-                if y.color is True:  # true: red, false:black
-                    new_node.p.color = False
-                    y.color = False
-                    new_node.p.p.color = True
-                    new_node = new_node.p.p
-                else:
-                    # case 2:
-                    if new_node == new_node.p.right:
-                        new_node = new_node.p
-                        self.left_rotate(new_node)
-                    # case 3:
-                    new_node.p.color = False
-                    new_node.p.p.color = True
-                    self.right_rotate(new_node.p.p)
-
-            else:  # (case 4,5,6)
-                y = new_node.p.p.left
-                # case 4:
-                if y.color is True:  # true: red, false:black
-                    new_node.p.color = False
-                    y.color = False
-                    new_node.p.p.color = True
-                    new_node = new_node.p.p
-                else:
-                    # case 2:
-                    if new_node == new_node.p.left:
-                        new_node = new_node.p
-                        self.right_rotate(new_node)
-                    # case 3:
-                    new_node.p.color = False
-                    new_node.p.p.color = True
-                    self.left_rotate(new_node.p.p)
-            if new_node == self.root:
-                break
-        self.root.color = False
+            self.inorder(x.left)
+            if x.color:
+                print((x.data, 'Red',), end='->')
+            else:
+                print((x.data, 'Black',), end='>')
+            self.inorder(x.right)
 
 
 if __name__ == '__main__':
     node = [10, 85, 15, 70, 20, 60, 30, 50]
+    print(node)
     rb = RB()
     for num in node:
-        print(num)
         rb.insert(num)
-    print(node)
+    rb.inorder(rb.root)
+    print()
