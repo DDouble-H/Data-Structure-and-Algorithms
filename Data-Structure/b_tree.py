@@ -13,22 +13,21 @@ class btree:
     def insert(self, key):
         root = self.root
 
-        if len(root.keys) == (2 * self.order) -1:
+        # full
+        if len(root.keys) == (2 * self.order) - 1:
             temp = Node()
             self.root = temp
-            # root 새로운 루트의 0번째 자식
+
             temp.child.insert(0, root)
-            self._child_split(temp, 0)
+            self._split_child(temp, 0)
             self._insert(temp, key)
         else:
             self._insert(root, key)
 
     def _insert(self, current_node, key):
         i = len(current_node.key-1)
-        # current_node가 leaf 일 때, 아닐 때
+
         if current_node.leaf:  # true
-            # 삽입할 새 키의 위치 찾기
-            # 키 앞으로 이동
             while i >= 0 and key[i] < current_node.key[i]:
                 current_node.keys[i+1] = current_node.key[i]
                 i -= 1
@@ -36,30 +35,31 @@ class btree:
         else:
             while i >= 0 and key[i] > current_node.key[i]:
                 i -= 1
-            if len(current_node[i].keys) == (2 * self.order) -1:
-                    self._child_split(current_node, i)
-                    if current_node.keys[i+1] < key:
-                        i += 1
+            if len(current_node[i].keys) == (2 * self.order) - 1:
+                self._split_child(current_node, i)
+                if current_node.keys[i+1] < key:
+                    i += 1
             self._insert(current_node.child, key)
 
+    def _split_child(self, split_node, idx):
+        temp_node = split_node.child[idx]
+        temp = Node(temp_node.leaf)
 
-    # split_node 분할(idx 기준) 분할하고자 하는 노드의 부모
-    # 기준값이 노드의 부모(가운데 값 올리면 됨)
-    def _child_split(self, split_node, idx):
-        pass
+        split_node.child.insert(idx+1, temp)
+        split_node.keys.insert(idx, temp_node.keys[self.order-1])
 
-    def delete(self, current_node, key):
-        pass
+        temp.keys = temp_node.keys[self.order:(self.order*2)-1]
+        temp_node.keys = temp_node.keys[0:self.order-1]
 
-    def _delete(self, current_node, key, idx):
-        pass
+        if not temp_node.leaf:
+            temp.child = temp_node.child[self.order:(self.order*2)-1]
+            temp_node.child = temp_node.child[0:self.order-1]
 
 
 if __name__ == '__main__':
 
     Btree = btree()
 
-    node = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+    node = [5, 10, 4, 3, 17, 2, 9, 19, 6, 13]
     for num in node:
         Btree.insert(num)
-
