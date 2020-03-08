@@ -25,21 +25,23 @@ class btree:
             self._insert(root, key)
 
     def _insert(self, current_node, key):
-        i = len(current_node.key-1)
+        i = len(current_node.keys) - 1
 
         if current_node.leaf:  # true
-            while i >= 0 and key[i] < current_node.key[i]:
-                current_node.keys[i+1] = current_node.key[i]
+            current_node.keys.append((None, None))
+            while i >= 0 and key[0] < current_node.keys[i][0]:
+                current_node.keys[i + 1] = current_node.keys[i]
                 i -= 1
             current_node.keys[i+1] = key
         else:
-            while i >= 0 and key[i] > current_node.key[i]:
+            while i >= 0 and key[0] < current_node.keys[i][0]:
                 i -= 1
-            if len(current_node[i].keys) == (2 * self.order) - 1:
+            i += 1
+            if len(current_node.child[i].keys) == (2 * self.order) - 1:
                 self._split_child(current_node, i)
-                if current_node.keys[i+1] < key:
+                if key[0] > current_node.keys[i][0]:
                     i += 1
-            self._insert(current_node.child, key)
+            self._insert(current_node.child[i], key)
 
     def _split_child(self, split_node, idx):
         temp_node = split_node.child[idx]
@@ -52,14 +54,43 @@ class btree:
         temp_node.keys = temp_node.keys[0:self.order-1]
 
         if not temp_node.leaf:
-            temp.child = temp_node.child[self.order:(self.order*2)-1]
+            temp.child = temp_node.child[self.order:self.order * 2]
             temp_node.child = temp_node.child[0:self.order-1]
+
+    def tree_print(self, current_node, l=0):
+        print("Level ", l, " ", len(current_node.keys), end=">")
+        for i in current_node.keys:
+            print(i, end=" ")
+        print()
+        l += 1
+        if len(current_node.child) > 0:
+            for i in current_node.child:
+                self.tree_print(i, l)
+
+    def delete(self, current_node, key):
+        if current_node.key is not None and current_node.leaf:
+            del current_node.key
+        else:
+            self._delete(current_node, key, idx)
+
+    def _delete(self, current_node, key, idx):
+        pass
+    def _delete_predeessor(self, current_node):
+        pass
+    def _delete_successor(self, current_node):
+        pass
+    def _del_merge(self, parent_node, i, j):
+        pass
+    def _delete_sibling(self, parent_node, i, j):
+        pass
 
 
 if __name__ == '__main__':
 
-    Btree = btree()
+    Btree = btree(5)
 
     node = [5, 10, 4, 3, 17, 2, 9, 19, 6, 13]
     for num in node:
-        Btree.insert(num)
+        Btree.insert((num, 2 * num))
+
+    Btree.tree_print(Btree.root)
