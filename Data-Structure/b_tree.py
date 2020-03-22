@@ -74,7 +74,14 @@ class btree:
             self._delete(current_node, key, idx)
 
     def _delete(self, current_node, key, idx):
-        pass
+        if current_node.keys[idx] == key:
+            if current_node.leaf:
+                del current_node.leaf
+            else:
+                self._delete_predeessor(current_node)
+        else:
+            pass
+
     def _delete_predeessor(self, current_node):
         pass
     def _delete_successor(self, current_node):
